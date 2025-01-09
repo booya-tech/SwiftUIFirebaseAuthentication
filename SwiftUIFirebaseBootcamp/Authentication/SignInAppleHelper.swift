@@ -36,7 +36,7 @@ final class SignInAppleHelper: NSObject {
     private var currentNonce: String?
     private var completionHandler: ((Result<SignInWithAppleResult, Error>) -> Void)? = nil
     
-    func startSignInWithAppleFlow() async throws -> SignInWithAppleResult {
+    func startSignInWithAppleFlowAsync() async throws -> SignInWithAppleResult {
         try await withCheckedThrowingContinuation { continuation in
             self.startSignInWithAppleFlow { result in
                 switch result {

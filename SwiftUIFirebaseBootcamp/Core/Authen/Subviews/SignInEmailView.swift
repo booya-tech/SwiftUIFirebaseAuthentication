@@ -7,29 +7,6 @@
 
 import SwiftUI
 
-final class SignInEmailViewModel: ObservableObject {
-    @Published var email = ""
-    @Published var password = ""
-
-    func signUp() async throws {
-        guard !email.isEmpty, !password.isEmpty else {
-            print("No email or password found.")
-            return
-        }
-
-        try await AuthenticationManager.shared.createUser(email: email, password: password)
-    }
-    
-    func signIn() async throws {
-        guard !email.isEmpty, !password.isEmpty else {
-            print("No email or password found.")
-            return
-        }
-
-        try await AuthenticationManager.shared.signInUser(email: email, password: password)
-    }
-}
-
 struct SignInEmailView: View {
     @StateObject private var viewModel = SignInEmailViewModel()
     @Binding var showSignInView: Bool
@@ -40,13 +17,13 @@ struct SignInEmailView: View {
                 .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.black, lineWidth: 2)
+                        .stroke(Color.black, lineWidth: 1)
                 )
             SecureField("Password...", text: $viewModel.password)
                 .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.black, lineWidth: 2)
+                        .stroke(Color.black, lineWidth: 1)
                 )
             Button("Sign in") {
                 Task {
