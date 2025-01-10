@@ -9,7 +9,7 @@ import Foundation
 import FirebaseAuth
 
 struct AuthResultDataModel {
-    let uid: String
+    let uid: String  
     let email: String?
     let photoUrl: String?
     let isAnonymous: Bool
