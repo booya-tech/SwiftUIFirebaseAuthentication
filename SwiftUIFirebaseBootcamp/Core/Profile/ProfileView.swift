@@ -9,7 +9,7 @@ import SwiftUI
 
 @MainActor
 final class ProfileViewModel: ObservableObject {
-//    @Published private(set) var user: AuthResultDataModel? = nil
+    //    @Published private(set) var user: AuthResultDataModel? = nil
     @Published private(set) var user: DBUser? = nil
     
     func loadCurrentUser() async throws {
@@ -26,11 +26,55 @@ final class ProfileViewModel: ObservableObject {
             self.user = try await UserManager.shared.getUser(userId: user.userId)
         }
     }
+    
+    func addUserPreference(text: String) {
+        guard let user else { return }
+        
+        Task {
+            try await UserManager.shared.addUserPreferences(userId: user.userId, preference: text)
+            self.user = try await UserManager.shared.getUser(userId: user.userId)
+        }
+    }
+    
+    func removeUserPreference(text: String) {
+        guard let user else { return }
+        
+        Task {
+            try await UserManager.shared.removeUserPreferences(userId: user.userId, preference: text)
+            self.user = try await UserManager.shared.getUser(userId: user.userId)
+        }
+    }
+    
+    func addFavoriteMovie() {
+        guard let user else { return }
+        let movie = Movie(id: "1", title: "Avatar 2", isPopular: true)
+        
+        Task {
+            try await UserManager.shared.addFavouriteMovie(userId: user.userId, movie: movie)
+            self.user = try await UserManager.shared.getUser(userId: user.userId)
+        }
+    }
+    func removeFavoriteMovie() {
+        guard let user else { return }
+        let movie = Movie(id: "1", title: "Avatar 2", isPopular: true)
+        
+        Task {
+            try await UserManager.shared.removeFavouriteMovie(userId: user.userId)
+            self.user = try await UserManager.shared.getUser(userId: user.userId)
+        }
+    }
+    
 }
 
 struct ProfileView: View {
     @StateObject private var viewModel = ProfileViewModel()
     @Binding var showSignInView: Bool
+    
+    let preferenceOptions: [String] = ["Sports", "Movies", "Books"]
+    
+    private func preferenceIsSelected(text: String) -> Bool {
+        viewModel.user?.preferences?.contains(text) == true
+    }
     
     var body: some View {
         List {
@@ -46,7 +90,35 @@ struct ProfileView: View {
                 } label: {
                     Text("User is premium: \((user.isPremium ?? false).description.capitalized)")
                 }
-
+                
+                VStack {
+                    HStack {
+                        ForEach(preferenceOptions, id: \.self) { string in
+                            let isSelected = preferenceIsSelected(text: string)
+                            Button(string) {
+                                if isSelected {
+                                    viewModel.removeUserPreference(text: string)
+                                } else {
+                                    viewModel.addUserPreference(text: string)
+                                }
+                            }
+                            .font(.headline)
+                            .buttonStyle(.borderedProminent)
+                            .tint(isSelected ? .green : .gray)
+                        }
+                    }
+                    
+                    Text("User preferences: \((user.preferences ?? []).joined(separator: ", "))")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                
+                Button("Favorite Movies: \(user.favouriteMovie?.title ?? "")") {
+                    if user.favouriteMovie == nil {
+                        viewModel.addFavoriteMovie()
+                    } else {
+                        viewModel.removeFavoriteMovie()
+                    }
+                }
             }
         }
         .task {
@@ -67,7 +139,8 @@ struct ProfileView: View {
 }
 
 #Preview {
-    NavigationStack {
-        ProfileView(showSignInView: .constant(false))
-    }
+    RootView()
+//    NavigationStack {
+//        ProfileView(showSignInView: .constant(false))
+//    }
 }

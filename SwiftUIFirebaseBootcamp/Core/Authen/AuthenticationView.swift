@@ -67,6 +67,7 @@ struct AuthenticationView: View {
                         try await viewModel.signInApple()
                         showSignInView = false
                     } catch {
+                        
                         print(error)
                     }
                 }
