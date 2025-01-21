@@ -23,7 +23,7 @@ struct ProductsView: View {
         List(viewModel.products) { product in
             ProductCellView(product: product)
         }
-        .navigationTitle("Products")
+        .navigationTitle("Productss")
         .task {
             try? await viewModel.getAllproducts()
         }
