@@ -30,7 +30,7 @@ struct ProductCellView: View {
                     .foregroundColor(.primary)
                 Text("Price: $\(product.price ?? 0, specifier: "%.2f")")
                 Text("Rating: \(product.rating ?? 0, specifier: "%.1f")")
-                Text("Categoty: \(product.category ?? "n/a")")
+                Text("Category: \(product.category ?? "n/a")")
                 Text("Brand: \(product.brand ?? "n/a")")
             }
             .font(.callout)

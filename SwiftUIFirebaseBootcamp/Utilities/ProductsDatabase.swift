@@ -23,6 +23,21 @@ struct Product: Identifiable, Codable {
     let brand, category: String?
     let thumbnail: String?
     let images: [String]?
+    
+    // Conform to String to get a raw value
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case description
+        case price
+        case discountPercentage
+        case rating
+        case stock
+        case brand
+        case category
+        case thumbnail
+        case images
+    }
 }
 
 // data uploaded (not necessary now)
